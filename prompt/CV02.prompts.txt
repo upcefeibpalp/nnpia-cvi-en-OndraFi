@@ -1,0 +1,7 @@
+ChatGpt
+
+1. Jak přidám do spring projektu spring-boot-devtools?
+2. Jak poznám žeto funguje? Když uložím ctrl + s změny tak se spring nerestartuje.
+3. furt nic.
+4. :00  INFO 17504 --- [nnpiacv] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+   2025-02-17T15:27:57.786+01:00  INFO 17504 --- [nnpiacv] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
