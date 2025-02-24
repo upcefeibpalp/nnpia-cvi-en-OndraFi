@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,9 +39,16 @@ public class UserController {
         return userService.findUser(id);
     }
 
-
-    @GetMapping("/user")
-    public Collection<User> findUsers() {
+    @GetMapping("/users")
+    public Collection<User> findUsers(@RequestParam(required = false) String email) {
+        if (email != null) {
+            User user = userService.findUserByEmail(email);
+            if (user == null) {
+                return Collections.emptyList();
+            }else {
+                return Collections.singletonList(user);
+            }
+        }
         return userService.findUsers();
     }
 
