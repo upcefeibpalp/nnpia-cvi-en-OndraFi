@@ -1,55 +1,73 @@
 package cz.upce.fei.nnpiacv.controller;
 
+import cz.upce.fei.nnpiacv.domain.Role;
 import cz.upce.fei.nnpiacv.domain.User;
+import cz.upce.fei.nnpiacv.dto.UserRequestDto;
+import cz.upce.fei.nnpiacv.repository.RoleRepository;
 import cz.upce.fei.nnpiacv.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RestController
+@Slf4j
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
-
-
-    /*
-        @GetMapping("/user")
-        public User
-        findUser(@RequestParam long id) {
-            return userService.findUser(id);
-        }
-      */
-
-
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public User
     findUser(@PathVariable long id) {
         return userService.findUser(id);
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public Collection<User> findUsers(@RequestParam(required = false) String email) {
         if (email != null) {
             User user = userService.findUserByEmail(email);
             if (user == null) {
                 return Collections.emptyList();
-            }else {
+            } else {
                 return Collections.singletonList(user);
             }
         }
         return userService.findUsers();
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody UserRequestDto user) {
+        log.info("Request for creating user obtained {}", user);
+
+        Role role = roleRepository.findByName("USER_ROLE");
+
+        User createdUser = userService.createUser(user.toUser(role));
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser.toResponseDto());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable long id,@RequestBody UserRequestDto userRequestDto) {
+        log.info("Request for updating user obtained {}", userRequestDto);
+        User user = userService.updateUser(id, userRequestDto);
+        return ResponseEntity.ok(user.toResponseDto());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+        log.info("Request for deleting user obtained");
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

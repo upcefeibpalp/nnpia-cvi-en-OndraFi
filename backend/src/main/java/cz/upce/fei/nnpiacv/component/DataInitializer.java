@@ -5,8 +5,6 @@ import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.repository.RoleRepository;
 import cz.upce.fei.nnpiacv.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +21,16 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Role role = new Role(0L,"USER_ROLE");
-        if(!roleRepository.existsById(role.getId())) {
+        Role role = new Role("ADMIN_ROLE");
+        if(!roleRepository.existsByName(role.getName())) {
             roleRepository.save(role);
         }
-        User user = new User(0L, "admin@upce.cz", "adminadmin", role);
-        if (!userRepository.existsById(user.getId())) {
+        Role userRole = new Role("USER_ROLE");
+        if(!roleRepository.existsByName(userRole.getName())) {
+            roleRepository.save(userRole);
+        }
+        User user = new User("admin@upce.cz", "adminadmin",role);
+        if (!userRepository.existsByEmail(user.getEmail())) {
             log.debug("Admin user saved{}", user);
             this.userRepository.save(user);
         }

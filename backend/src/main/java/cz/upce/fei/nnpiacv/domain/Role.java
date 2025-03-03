@@ -1,30 +1,22 @@
 package cz.upce.fei.nnpiacv.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @NoArgsConstructor
 @Table(name="app_role")
 public class Role {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NonNull
     private String name;
-    @OneToMany(mappedBy = "role")
-    private Set<User> users = new HashSet<>();
-
-    public Role(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    private List<User> users;
 }
