@@ -12,7 +12,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class UserService {
+public class UserService{
 
     private final UserRepository userRepository;
 
