@@ -2,6 +2,7 @@ package cz.upce.fei.nnpiacv.controller;
 
 import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.dto.UserRequestDto;
+import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.responses.LoginResponse;
 import cz.upce.fei.nnpiacv.service.AuthenticationService;
 import cz.upce.fei.nnpiacv.service.JwtService;
@@ -21,12 +22,12 @@ public class AuthController {
         this.authenticationService = authenticationService;
     }
 
-//    @PostMapping("/signup")
-//    public UserResponseDto register(@RequestBody UserRequestDto registerUserDto) {
-//        User registeredUser = authenticationService.signup(registerUserDto);
-//
-//        return ResponseEntity.ok(registeredUser);
-//    }
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponseDto> register(@RequestBody UserRequestDto registerUserDto) {
+        User registeredUser = authenticationService.signup(registerUserDto);
+
+        return ResponseEntity.ok(registeredUser.toResponseDto());
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody UserRequestDto loginUserDto) {

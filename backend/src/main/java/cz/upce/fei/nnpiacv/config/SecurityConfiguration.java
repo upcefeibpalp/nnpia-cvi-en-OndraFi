@@ -59,7 +59,7 @@ public class SecurityConfiguration {
         http
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/login").permitAll()
+                        .requestMatchers("/**").permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
