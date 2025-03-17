@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class JwtService {
     @Value("${security.jwt.secret-key}")
@@ -23,16 +25,21 @@ public class JwtService {
     private long jwtExpiration;
 
     public String extractUsername(String token) {
+        log.info("🔍 Extracted username from token: " + extractClaim(token, Claims::getSubject));
         return extractClaim(token, Claims::getSubject);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
+        log.info("🔍 Extracted claims from token: " + claims);
         return claimsResolver.apply(claims);
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        log.info("Generating token for: " + userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("email", userDetails.getUsername());
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
@@ -48,6 +55,7 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ) {
+        log.info("Building token for user: " + userDetails.getUsername());
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

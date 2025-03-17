@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpiacv.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -32,42 +33,35 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf(Customizer.withDefaults())
-//                .authorizeHttpRequests()
-//                .requestMatchers("/auth/**")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
 //        http
-//                .csrf(Customizer.withDefaults()) // Vypneme CSRF, protože používáme JWT
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/**").permitAll() // Povolení přístupu k přihlašovacímu endpointu
-//                        .anyRequest().authenticated() // Ostatní endpointy vyžadují autentizaci
+//
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/api/v1/auth/**").permitAll()
+//                        .anyRequest()
+//                        .authenticated()
 //                )
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT je bezstavové
-//                .exceptionHandling(exceptions -> exceptions
-//                        .accessDeniedPage("/403")); // Pro případ, že uživatel nemá přístup
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authenticationProvider(authenticationProvider)
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .cors(Customizer.withDefaults());
 //        return http.build();
-        http
 
+        http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .anyRequest()
-                        .authenticated()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults());
+                .cors(Customizer.withDefaults())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: " + authException.getMessage());
+                        })
+                );
         return http.build();
     }
 

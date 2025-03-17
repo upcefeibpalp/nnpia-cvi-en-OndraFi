@@ -6,10 +6,12 @@ import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.responses.LoginResponse;
 import cz.upce.fei.nnpiacv.service.AuthenticationService;
 import cz.upce.fei.nnpiacv.service.JwtService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
@@ -32,6 +34,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody UserRequestDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
+
+        log.info("User authenticated: " + authenticatedUser.getEmail());
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
