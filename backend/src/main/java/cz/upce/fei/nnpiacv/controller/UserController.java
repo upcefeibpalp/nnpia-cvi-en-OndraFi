@@ -3,6 +3,7 @@ package cz.upce.fei.nnpiacv.controller;
 import cz.upce.fei.nnpiacv.domain.Role;
 import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.dto.UserRequestDto;
+import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.repository.RoleRepository;
 import cz.upce.fei.nnpiacv.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +29,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User
+    public UserResponseDto
     findUser(@PathVariable long id) {
-        return userService.findUser(id);
+        return userService.findUser(id).toResponseDto();
     }
 
     @GetMapping

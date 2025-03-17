@@ -2,6 +2,8 @@ package cz.upce.fei.nnpiacv.service;
 
 import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.dto.UserRequestDto;
+import cz.upce.fei.nnpiacv.exception.UserAlreadyExistsException;
+import cz.upce.fei.nnpiacv.exception.UserNotFoundException;
 import cz.upce.fei.nnpiacv.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,10 @@ public class UserService{
         this.userRepository = userRepository;
     }
 
-    public User createUser(User user) {
+    public User createUser(User user) throws UserAlreadyExistsException {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException(user.getEmail());
+        }
         return userRepository.save(user);
     }
 
@@ -28,10 +33,10 @@ public class UserService{
     public void init() {
     }
 
-    public User findUser(long id) {
+    public User findUser(long id) throws UserNotFoundException {
         log.debug("Find user with id {}", id);
-        Optional<User> user = userRepository.findById(id);
-        return user.orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public User findUserByEmail(String email) {

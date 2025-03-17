@@ -12,7 +12,4 @@ public class LoginResponse {
     @Getter
     private long expiresIn;
 
-    public void setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
 }
