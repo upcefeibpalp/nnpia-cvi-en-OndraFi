@@ -50,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.warn("❌ No JWT token found, skipping authentication");
 
             filterChain.doFilter(request, response);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
             return;
         }
 
@@ -75,9 +74,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }else{
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token.");
-
                     log.warn("⚠️ JWT token is NOT valid");
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token.");
                 }
             }
 

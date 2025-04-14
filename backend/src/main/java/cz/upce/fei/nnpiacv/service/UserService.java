@@ -65,4 +65,10 @@ public class UserService{
 
         return user;
     }
+    public User changeUserActive(long id, Boolean active) {
+        User user = this.findUser(id);
+        user.setActive(active);
+        userRepository.save(user);
+        return user;
+    }
 }

@@ -28,8 +28,10 @@ public class User implements UserDetails {
     @NonNull
     private Role role;
 
+    private Boolean active = false;
+
     public UserResponseDto toResponseDto() {
-        return UserResponseDto.builder().id(id).email(email).password(password).build();
+        return UserResponseDto.builder().id(id).email(email).password(password).active(active).build();
     }
 
 

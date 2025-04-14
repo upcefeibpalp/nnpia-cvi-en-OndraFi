@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
-
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -35,16 +35,16 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<User> findUsers(@RequestParam(required = false) String email) {
+    public Collection<UserResponseDto> findUsers(@RequestParam(required = false) String email) {
         if (email != null) {
             User user = userService.findUserByEmail(email);
             if (user == null) {
                 return Collections.emptyList();
             } else {
-                return Collections.singletonList(user);
+                return Collections.singletonList(user.toResponseDto());
             }
         }
-        return userService.findUsers();
+        return userService.findUsers().stream().map(User::toResponseDto).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -58,9 +58,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable long id,@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody UserRequestDto userRequestDto) {
         log.info("Request for updating user obtained {}", userRequestDto);
         User user = userService.updateUser(id, userRequestDto);
+        return ResponseEntity.ok(user.toResponseDto());
+    }
+
+    @PutMapping("/{id}/active/{active}")
+    public ResponseEntity<?> setUserActive(@PathVariable long id, @PathVariable boolean active) {
+        User user = userService.changeUserActive(id, active);
         return ResponseEntity.ok(user.toResponseDto());
     }
 
