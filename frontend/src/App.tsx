@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import UserTable from './components/UserTable';
 import {Container, Typography} from '@mui/material';
 import axios from "axios";
+import UserCreateForm from "./components/UserCreateForm.tsx";
 
 function App() {
     interface User {
@@ -43,6 +44,7 @@ function App() {
                 NNPIA - Single-page application
             </Typography>
             <UserTable users={users} toggleUserActive={toggleUserActive}/>
+            <UserCreateForm/>
         </Container>
     );
 }
