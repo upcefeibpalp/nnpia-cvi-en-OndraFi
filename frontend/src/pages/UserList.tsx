@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {Container, Typography} from "@mui/material";
 import UserTable from "../components/UserTable.tsx";
-import UserCreateForm from "../components/UserCreateForm.tsx";
+import AuthButton from "../components/AuthButton.tsx";
 
 const UserList = () => {
     interface User {
@@ -40,6 +40,8 @@ const UserList = () => {
 
     return (
         <Container>
+            <AuthButton />
+
             <Typography variant="h4" gutterBottom sx={{mt: 4}}>
                 NNPIA - Single-page application
             </Typography>
